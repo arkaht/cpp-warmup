@@ -1,8 +1,8 @@
 #include <iostream>
 
-#include "character.h"
-#include "merchant.h"
-#include "weapon.h"
+#include "src/character.h"
+#include "src/merchant.h"
+#include "src/weapon.h"
 
 int main()
 {
@@ -45,8 +45,8 @@ int main()
 	#pragma endregion
 
 	#pragma region WeaponDef
-		Weapon elytra_x1(
-			std::string( "Elytra-X1" ),
+		Weapon elyte_x1(
+			std::string( "Elyte-X1" ),
 			std::string( "One bullet and your targets will fall on the ground. One shot and your targets are already out of this world." ),
 			WeaponType::PulseCharge,
 			500,
@@ -67,10 +67,13 @@ int main()
 	#pragma endregion
 
 	#pragma region SetupCharacters
-		snyperh.equip_weapon( &elytra_x1 );
+		snyperh.equip_weapon( &elyte_x1 );
 		assassin.equip_weapon( &the_blood_theft );
 		std::cout << std::endl;
 	#pragma endregion
 	
+		std::cout << "sell: " << elyte_x1.get_sell_price() << "$ buy: " << elyte_x1.get_buy_price() << "$" << std::endl;
 	snyperh.attack_character( &assassin );
+	elyte_x1.print_state();
+	std::cout << "sell: " << elyte_x1.get_sell_price() << "$ buy: " << elyte_x1.get_buy_price() << "$" << std::endl;
 }
