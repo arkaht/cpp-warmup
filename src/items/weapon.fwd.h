@@ -1,5 +1,5 @@
 #pragma once
 
-enum WeaponType;
+enum class WeaponType;
 
 class Weapon;

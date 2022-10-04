@@ -1,79 +1,202 @@
 #include <iostream>
+#include <functional>
 
-#include "src/character.h"
-#include "src/merchant.h"
-#include "src/weapon.h"
+#include "src/creatures/monster.h"
+#include "src/creatures/characters/merchant.h"
+#include "src/items/weapon.h"
+
+using lambda = std::function<void()>;
+
+struct UserAction
+{
+	const char* name;
+	lambda callback;
+	
+	UserAction( const char* name, lambda callback ) 
+		: name( name ), callback( callback ) {};
+};
+
+void user_action_from( UserAction* actions, size_t len )
+{
+	//  print actions
+	for ( int i = 0; i < len; i++ )
+	{
+		UserAction action = actions[i];
+		std::cout << i + 1 << " - " << action.name << std::endl;
+	}
+
+	//  read action input
+	int action_id;
+	do
+	{
+		std::cin >> action_id;
+		action_id--;
+	}
+	while ( action_id < 0 || action_id >= len );
+
+	//  invoke callback
+	actions[action_id].callback();
+}
 
 int main()
 {
 	std::cout << "Welcome to the Arena!\n";
+
+	//  init random
+	srand( time( NULL ) );
 	
-	#pragma region CharacterDef
-		Character snyperh(
-			std::string( "Lyhn" ),
-			std::string( "the Snyperh" ),
-			std::string( "Have you seen my shot? Of course not. You died before." ),
-			1000,
-			100,
-			CharacterRace::Human,
-			CharacterSpeciality::Snyperh
-		);
+	//  characters def
+	Monster alien(
+		"Alien",
+		"Veniminous & dangerous creature",
+		250,
+		8
+	);
+	alien.introduce();
 
-		Character assassin(
-			std::string( "Shhht" ),
-			std::string( "Chhht"),
-			std::string( "The most darkness crimes happen in the most absolute silence." ),
-			99,
-			100,
-			CharacterRace::Human,
-			CharacterSpeciality::Spy
-		);
+	Character snyperh(
+		"Lyhn the Snyperh",
+		"Hidden in a Ghillie suit.",
+		"Have you seen my shot? Of course not. You died before.",
+		10000,
+		100,
+		4,
+		CharacterRace::HUMAN,
+		CharacterSpeciality::SNYPERH
+	);
+	snyperh.introduce();
 
-		Merchant merchant(
-			std::string( "Atomic Kality" ),
-			std::string( "A weapon dealer specialized in heavy weaponary, attracting mercenaries and hitmen. The contact is made remotely, hopefully, their connection is encrypted allowing secret transactions without a trace log." ),
-			std::string( "DX" ),
-			std::string( "A.K. Dealer" ),
-			std::string( "What. Is. Your. Order?" ),
-			100000,
-			100,
-			CharacterRace::Cyborg,
-			CharacterSpeciality::Dealer
-		);
+	Character assassin(
+		"Shhht",
+		"Chhht",
+		"The most darkness crimes happen in the most absolute silence.",
+		99,
+		100,
+		3,
+		CharacterRace::HUMAN,
+		CharacterSpeciality::SPY
+	);
+	assassin.introduce();
+
+	Merchant merchant(
+		"Atomic Kality",
+		"A weapon dealer specialized in heavy weaponary, attracting mercenaries and hitmen. The contact is made remotely, hopefully, their connection is encrypted allowing secret transactions without a trace log.",
+		"DX-A.K. Dealer",
+		"What. Is. Your. Order?",
+		100000,
+		100,
+		10,
+		CharacterRace::CYBORG,
+		CharacterSpeciality::DEALER
+	);
+	merchant.introduce();
+
+	std::cout << std::endl;
+
+	//  item def
+	Weapon elyte_x1(
+		"Elyte-X1",
+		"One bullet and your targets will fall on the ground. One shot and your targets are already out of this world.",
+		WeaponType::PULSE_CHARGE,
+		500,
+		DamageType::PIERCING,
+		27,
+		10000,
+		1.0f,
+		.025f
+	);
+
+	Weapon the_blood_theft(
+		"The Blood Theft",
+		"All your victims blood will charge this dague's energy, making it more than deadly. Its power can even hurt the soul of your victims.",
+		WeaponType::MELEE,
+		50,
+		DamageType::SLASHING,
+		1,
+		10000,
+		1.0f,
+		.025f
+	);
+
+	Weapon deagle(
+		"Deagle",
+		"Boum.",
+		WeaponType::FIREARM,
+		75,
+		DamageType::PIERCING,
+		3,
+		5000,
+		1.0f,
+		.15f
+	);
+
+	Weapon poisonous_dart(
+		"Poisonous Dart",
+		"Slash your enemies to deal them poison.",
+		WeaponType::MELEE,
+		75,
+		DamageType::SLASHING,
+		3,
+		5000,
+		1.0f,
+		.15f
+	);
+
+	Item tokiwoka(
+		"Toki-Woka",
+		"Used for communicating with others Toki-Wokas",
+		1,
+		100,
+		1.0f
+	);
+
+
+	//  setup characters
+	alien.equip_weapon( &poisonous_dart );
+	alien.store_item( &tokiwoka );
+	merchant.store_item( &deagle );
+	snyperh.equip_weapon( &elyte_x1 );
+	assassin.equip_weapon( &the_blood_theft );
+	std::cout << std::endl;
+	
+	//tokiwoka.print_state();
+
+	//std::cout << "sell: " << elyte_x1.get_sell_price() << "$ buy: " << elyte_x1.get_buy_price() << "$" << std::endl;
+	//alien.attack( &assassin );
+	//snyperh.attack( &alien );
+	//std::cout << "sell: " << elyte_x1.get_sell_price() << "$ buy: " << elyte_x1.get_buy_price() << "$" << std::endl;
+
+	UserAction actions[] {
+		UserAction( "Walk", 
+			[&]
+			{
+				std::cout << "wok" << std::endl;
+			} 
+		),
+		UserAction( "Call Weapon Dealer", 
+			[&]
+			{
+				merchant.introduce();
+				std::cout << "I can sell you these:" << std::endl;
+
+				int i = 0;
+				for ( Item* item : *merchant.get_inventory() )
+				{
+					std::cout << ++i << " - ";
+					item->print_state();
+				}
+			}
+		)
+	};
+
+	do
+	{
+		user_action_from( actions, 2 );
 
 		std::cout << std::endl;
-	#pragma endregion
-
-	#pragma region WeaponDef
-		Weapon elyte_x1(
-			std::string( "Elyte-X1" ),
-			std::string( "One bullet and your targets will fall on the ground. One shot and your targets are already out of this world." ),
-			WeaponType::PulseCharge,
-			500,
-			27,
-			10000,
-			.025f
-		);
-
-		Weapon the_blood_theft(
-			std::string( "The Blood Theft" ),
-			std::string( "All your victims blood will charge this dague's energy, making it more than deadly. Its power can even hurt the soul of your victims." ),
-			WeaponType::Melee,
-			50,
-			3,
-			10000,
-			.025f
-		);
-	#pragma endregion
-
-	#pragma region SetupCharacters
-		snyperh.equip_weapon( &elyte_x1 );
-		assassin.equip_weapon( &the_blood_theft );
-		std::cout << std::endl;
-	#pragma endregion
+	}
+	while ( true );
 	
-		std::cout << "sell: " << elyte_x1.get_sell_price() << "$ buy: " << elyte_x1.get_buy_price() << "$" << std::endl;
-	snyperh.attack_character( &assassin );
-	elyte_x1.print_state();
-	std::cout << "sell: " << elyte_x1.get_sell_price() << "$ buy: " << elyte_x1.get_buy_price() << "$" << std::endl;
+	//merchant.store_weapon( &deagle );
+	//merchant.sell_weapon_to( &deagle, &snyperh );
 }
