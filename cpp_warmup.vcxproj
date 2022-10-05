@@ -71,6 +71,11 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <PublicIncludeDirectories>
+    </PublicIncludeDirectories>
+    <IncludePath>$(ProjectDir);$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -130,7 +135,7 @@
   <ItemGroup>
     <ClCompile Include="src\items\item.cpp" />
     <ClCompile Include="src\creatures\monster.cpp" />
-    <ClCompile Include="src\attack.cpp" />
+    <ClCompile Include="src\damages\attack.cpp" />
     <ClCompile Include="src\creatures\creature.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="src\creatures\characters\character.cpp" />
@@ -138,12 +143,15 @@
     <ClCompile Include="src\items\weapon.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\attachments\barrel_attachment.hpp" />
+    <ClInclude Include="src\attachments\suppressor_attachment.hpp" />
+    <ClInclude Include="src\damages\damage_type.h" />
+    <ClInclude Include="src\attachments\iattachment.hpp" />
     <ClInclude Include="src\items\item.h" />
     <ClInclude Include="src\creatures\monster.h" />
-    <ClInclude Include="src\attack.h" />
+    <ClInclude Include="src\damages\attack.h" />
     <ClInclude Include="src\creatures\creature.fwd.h" />
     <ClInclude Include="src\creatures\creature.h" />
-    <ClInclude Include="src\damage_type.h" />
     <ClInclude Include="src\creatures\characters\character.fwd.h" />
     <ClInclude Include="src\creatures\characters\character.h" />
     <ClInclude Include="src\creatures\characters\merchant.h" />

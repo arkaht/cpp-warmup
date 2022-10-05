@@ -4,8 +4,8 @@
 
 #include "creature.fwd.h"
 
-#include "../attack.h"
-#include "../items/weapon.h"
+#include "src/damages/attack.h"
+#include "src/items/weapon.h"
 
 class Creature
 {

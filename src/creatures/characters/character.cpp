@@ -41,13 +41,14 @@ void Character::loot( Creature* looted )
 	}
 
 	//  loot inventory
-	auto inventory = *looted->get_inventory();
-	for ( Item* item : inventory )
+	auto inventory = looted->get_inventory();
+	for ( auto itr = inventory->begin(); itr < inventory->end(); itr++ )
 	{
+		Item* item = *itr;
 		store_item( item );
 		std::cout << this_name << " loot the item '" << item->get_name() << "'" << std::endl;
 	}
-	inventory.clear();
+	inventory->clear();
 
 	//  loot weapon
 	Weapon* weapon = looted->get_weapon();

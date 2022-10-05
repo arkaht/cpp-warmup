@@ -3,7 +3,7 @@
 #include <iostream>
 
 Item::Item( const char* name, const char* description, int weight, 
-			int price, int durability )
+			int price, float durability )
 	: _name( name ), _description( description ), _weight( weight ),
 	  _price( price ), _durability( durability )
 {}

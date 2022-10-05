@@ -1,8 +1,8 @@
 #include <iostream>
 
 #include "creature.h"
-#include "../items/weapon.h"
-#include "characters/character.h"
+#include "src/items/weapon.h"
+#include "src/creatures/characters/character.h"
 
 Creature::Creature( const char* name, const char* description, int health, int defense )
 	: _name( name ), _description( description ), _health( health ), 

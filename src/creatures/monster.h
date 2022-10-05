@@ -1,6 +1,7 @@
 #pragma once
 #include "creature.h"
 
+//  you are useless bro
 class Monster : public Creature
 {
 public:

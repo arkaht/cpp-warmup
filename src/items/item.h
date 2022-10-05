@@ -11,7 +11,7 @@ protected:
 
 	float _durability;  //  0.0f to 1.0f
 public:
-	Item( const char* name, const char* description, int weight, int price, int durability );
+	Item( const char* name, const char* description, int weight, int price, float durability );
 
 	virtual void print_state();
 

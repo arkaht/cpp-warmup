@@ -4,6 +4,7 @@
 #include "src/creatures/monster.h"
 #include "src/creatures/characters/merchant.h"
 #include "src/items/weapon.h"
+#include "src/attachments/suppressor_attachment.hpp"
 
 using lambda = std::function<void()>;
 
@@ -97,7 +98,7 @@ int main()
 	Weapon elyte_x1(
 		"Elyte-X1",
 		"One bullet and your targets will fall on the ground. One shot and your targets are already out of this world.",
-		WeaponType::PULSE_CHARGE,
+		WeaponType::RIFLE,
 		500,
 		DamageType::PIERCING,
 		27,
@@ -121,7 +122,7 @@ int main()
 	Weapon deagle(
 		"Deagle",
 		"Boum.",
-		WeaponType::FIREARM,
+		WeaponType::PISTOL,
 		75,
 		DamageType::PIERCING,
 		3,
@@ -150,6 +151,21 @@ int main()
 		1.0f
 	);
 
+	SuppressorAttachment suppressor(
+		"Suppressor",
+		"Minimize the sound the gun emits but decreases its damage too",
+		1,
+		99,
+		1.0f,
+		-15
+	);
+	poisonous_dart.attach( &suppressor );  //  successfully fails
+	elyte_x1.attach( &suppressor );
+	for ( auto pair : *elyte_x1.get_attachments() )
+	{
+		std::cout << pair.first << " - " << pair.second << std::endl;
+	}
+	//elyte_x1.unattach( &suppressor );
 
 	//  setup characters
 	alien.equip_weapon( &poisonous_dart );
@@ -162,8 +178,8 @@ int main()
 	//tokiwoka.print_state();
 
 	//std::cout << "sell: " << elyte_x1.get_sell_price() << "$ buy: " << elyte_x1.get_buy_price() << "$" << std::endl;
-	//alien.attack( &assassin );
-	//snyperh.attack( &alien );
+	alien.attack( &assassin );
+	snyperh.attack( &alien );
 	//std::cout << "sell: " << elyte_x1.get_sell_price() << "$ buy: " << elyte_x1.get_buy_price() << "$" << std::endl;
 
 	UserAction actions[] {
@@ -180,8 +196,10 @@ int main()
 				std::cout << "I can sell you these:" << std::endl;
 
 				int i = 0;
-				for ( Item* item : *merchant.get_inventory() )
+				auto inventory = merchant.get_inventory();
+				for ( auto itr = inventory->begin(); itr < inventory->end(); itr++ )
 				{
+					Item* item = *itr;
 					std::cout << ++i << " - ";
 					item->print_state();
 				}

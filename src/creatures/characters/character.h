@@ -3,8 +3,8 @@
 
 #include "character.fwd.h"
 
-#include "../creature.h"
-#include "../../items/weapon.h"
+#include "src/creatures/creature.h"
+#include "src/items/weapon.h"
 
 enum CharacterRace
 {

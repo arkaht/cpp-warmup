@@ -1,14 +1,14 @@
 #include "attack.h"
-#include "creatures/creature.h"
-#include "roll.h"
+
+#include "src/creatures/creature.h"
+#include "src/roll.h"
 
 #include <random>
 #include <iostream>
 
-Attack::Attack( Creature* attacker, Creature* target, int damage, DamageType damage_type, int bonus )
+Attack::Attack( Creature* attacker, Creature* target, Weapon* inflictor, int bonus )
 	: _attacker( attacker ), _target( target ), 
-	  _damage( damage ), _damage_type(damage_type),
-	  _bonus( bonus )
+	  _inflictor( inflictor ), _bonus( bonus )
 {}
 
 bool Attack::resolve()
@@ -27,7 +27,24 @@ bool Attack::resolve()
 	if ( result >= defense )
 	{
 		std::cout << _attacker->get_name() << " attacked " << _target->get_name() << " using '" << _attacker->get_weapon()->get_name() << "'" << std::endl;
-		_target->take_damage( _damage_type, ( _damage + result ) - defense, _attacker );
+		
+		//  get base damage
+		int damage = ( ( _inflictor->get_damage() + result ) - defense );
+		
+		//  get attachments damage bonuses
+		auto attachments = _inflictor->get_attachments();
+		auto itr = attachments->begin();
+		while ( itr != attachments->end() )
+		{
+			IAttachment* attachment = itr->second;
+
+			Damage info = attachment->get_damage_bonus_against( _target );
+			damage += info.points;
+
+			itr++;
+		}
+
+		_target->take_damage( _inflictor->get_damage_type(), damage, _attacker);
 		
 		//  loot target
 		if ( _attacker->can_loot() )
