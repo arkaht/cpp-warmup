@@ -35,6 +35,8 @@ void user_action_from( UserAction* actions, size_t len )
 	}
 	while ( action_id < 0 || action_id >= len );
 
+	std::cout << std::endl;
+
 	//  invoke callback
 	actions[action_id].callback();
 }
@@ -53,6 +55,8 @@ int main()
 		250,
 		8
 	);
+	alien.set_damages_immunity( DamageType::VIRAL | DamageType::WATER | DamageType::CARCASS );
+	alien.set_damages_critical( DamageType::BLOOD | DamageType::FIRE );
 	alien.introduce();
 
 	Character snyperh(
@@ -99,48 +103,58 @@ int main()
 		"Elyte-X1",
 		"One bullet and your targets will fall on the ground. One shot and your targets are already out of this world.",
 		WeaponType::RIFLE,
-		500,
-		DamageType::PIERCING,
 		27,
 		10000,
 		1.0f,
 		.025f
+	);
+	elyte_x1.add_damages(
+		Damage( DamageType::SLICING, 400 ),
+		Damage( DamageType::FIRE, 25 ),
+		Damage( DamageType::CARCASS, 50 )
 	);
 
 	Weapon the_blood_theft(
 		"The Blood Theft",
 		"All your victims blood will charge this dague's energy, making it more than deadly. Its power can even hurt the soul of your victims.",
 		WeaponType::MELEE,
-		50,
-		DamageType::SLASHING,
 		1,
 		10000,
 		1.0f,
 		.025f
+	);
+	the_blood_theft.add_damages(
+		Damage( DamageType::SLICING, 50 ),
+		Damage( DamageType::BLOOD, 20 ),
+		Damage( DamageType::SOUL, 10 )
 	);
 
 	Weapon deagle(
 		"Deagle",
 		"Boum.",
 		WeaponType::PISTOL,
-		75,
-		DamageType::PIERCING,
 		3,
 		5000,
 		1.0f,
 		.15f
+	);
+	deagle.add_damages(
+		Damage( DamageType::SLICING, 50 ),
+		Damage( DamageType::CARCASS, 25 )
 	);
 
 	Weapon poisonous_dart(
 		"Poisonous Dart",
 		"Slash your enemies to deal them poison.",
 		WeaponType::MELEE,
-		75,
-		DamageType::SLASHING,
 		3,
 		5000,
 		1.0f,
 		.15f
+	);
+	poisonous_dart.add_damages(
+		Damage( DamageType::SLICING, 50 ),
+		Damage( DamageType::VIRAL, 20 )
 	);
 
 	Item tokiwoka(
@@ -181,6 +195,7 @@ int main()
 	alien.attack( &assassin );
 	snyperh.attack( &alien );
 	//std::cout << "sell: " << elyte_x1.get_sell_price() << "$ buy: " << elyte_x1.get_buy_price() << "$" << std::endl;
+	std::cout << std::endl;
 
 	UserAction actions[] {
 		UserAction( "Walk", 
@@ -209,6 +224,7 @@ int main()
 
 	do
 	{
+		std::cout << "What do you do?" << std::endl;
 		user_action_from( actions, 2 );
 
 		std::cout << std::endl;

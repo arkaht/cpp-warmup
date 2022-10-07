@@ -8,6 +8,7 @@
 #include <src/creatures/creature.fwd.h>
 #include <src/attachments/iattachment.hpp>
 
+typedef std::vector<Damage> damages_container;
 typedef std::unordered_map<AttachmentType, IAttachment*> attachments_container;
 
 enum class WeaponType
@@ -23,16 +24,13 @@ private:
 	WeaponType _type;
 	Creature* _owner;
 
-	DamageType _damage_type;
+	damages_container _damages;
 	attachments_container _attachments;
-
-	int _damage;
 
 	float _durability_per_use;
 public:
 	Weapon( const char* name, const char* description, WeaponType type,
-		int damage, DamageType damage_type, int weight, int price,
-		float durability, float durability_per_use );
+		int weight, int price, float durability, float durability_per_use );
 
 	void print_state() override;
 
@@ -40,8 +38,18 @@ public:
 	void set_owner( Creature* owner );
 
 	WeaponType get_weapon_type() { return _type; }
-	DamageType get_damage_type() { return _damage_type; }
-	int get_damage() { return _damage; }
+
+	void add_damages( Damage damage ) { _damages.push_back( damage ); }
+	template <class... Args>
+	void add_damages( Args... args )
+	{
+		damages_container new_damages = { args... };
+		for ( auto itr = new_damages.begin(); itr < new_damages.end(); itr++ )
+		{
+			_damages.push_back( *itr );
+		}
+	}
+	damages_container* get_damages() { return &_damages; }
 
 	bool attach( IAttachment* attachment );
 	bool unattach( IAttachment* attachment );

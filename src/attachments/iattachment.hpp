@@ -20,4 +20,6 @@ public:
 
 	virtual AttachmentType get_attachment_type() = 0;
 	virtual Damage get_damage_bonus_against( Creature* character ) = 0;
+
+	virtual const char* get_name() = 0;
 };

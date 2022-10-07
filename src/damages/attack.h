@@ -18,5 +18,7 @@ public:
 	Attack( Creature* attacker, Creature* target, Weapon* inflictor, int bonus );
 
 	bool resolve();
+
+	void handle_damage( Damage& damage, Damage new_damage, const char* name );
 };
 

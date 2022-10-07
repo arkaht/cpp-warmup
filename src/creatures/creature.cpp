@@ -14,16 +14,16 @@ void Creature::introduce()
 	std::cout << get_name() << " is a creature (" << _health << " HP, " << _defense << " DEF) '" << _description << "'" << std::endl;
 }
 
-void Creature::take_damage( DamageType type, int damage, Creature* attacker )
+void Creature::take_damage( Damage damage, Creature* attacker )
 {
 	if ( !is_alive() ) return;
 
 	auto this_name = get_name();
 
-	if ( damage > 0 )
+	if ( damage.points > 0 )
 	{
-		_health -= damage;
-		std::cout << this_name << " lost " << damage << "HP." << std::endl;
+		_health -= damage.points;
+		std::cout << this_name << " lost " << damage.points << "HP." << std::endl;
 	}
 	else
 	{

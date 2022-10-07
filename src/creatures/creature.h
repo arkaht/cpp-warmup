@@ -16,6 +16,9 @@ protected:
 	std::vector<Attack> _attacks;  //  why?
 	Weapon* _weapon;
 
+	DamageType::Flag _damages_immunity;
+	DamageType::Flag _damages_critical;
+
 	std::vector<Item*> _inventory;
 
 	int _health;
@@ -26,9 +29,15 @@ public:
 
 	virtual void introduce();
 
-	void take_damage( DamageType type, int damage, Creature* attacker );
+	void take_damage( Damage damage, Creature* attacker );
 	void attack( Creature* target );
 	void heal( int health );
+
+	void set_damages_immunity( DamageType::Flag immunity ) { _damages_immunity = immunity; }
+	void set_damages_critical( DamageType::Flag critical ) { _damages_critical = critical; }
+
+	DamageType::Flag get_damages_immunity() { return _damages_immunity; }
+	DamageType::Flag get_damages_critical() { return _damages_critical; }
 
 	void equip_weapon( Weapon* weapon );
 	void drop_weapon();

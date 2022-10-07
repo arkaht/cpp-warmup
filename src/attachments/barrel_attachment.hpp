@@ -25,6 +25,8 @@ public:
 
 	Damage get_damage_bonus_against( Creature* character ) override
 	{
-		return Damage( DamageType::PIERCING, _damage_bonus );
+		return Damage( DamageType::NONE, _damage_bonus );
 	}
+
+	const char* get_name() { return _name; }
 };

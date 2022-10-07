@@ -4,17 +4,15 @@
 #include <iostream>
 
 Weapon::Weapon( const char* name, const char* description, WeaponType type,
-				int damage, DamageType damage_type, int weight, int price, 
-				float durability, float durability_per_use )
+				int weight, int price, float durability, float durability_per_use )
 	: Item( name, description, weight, price, durability ), _type( type ),
-	  _damage( damage ), _damage_type( damage_type ), 
 	  _durability_per_use( durability_per_use ), _owner( nullptr )
 {}
 
 void Weapon::print_state()
 {
-	std::cout << "'" << _name << "' ( "
-		<< _damage << " damage, " << _weight << "kg, "
+	std::cout << "'" << _name << "' ( " 
+		<< _weight << "kg, "
 		<< _price << "$, " << _durability * 100 << "% durability ) : '"
 		<< _description << "'" << std::endl;
 }
@@ -50,10 +48,7 @@ bool Weapon::attach( IAttachment* attachment )
 	_attachments[attachment->get_attachment_type()] = attachment;
 
 	//  notify
-	if ( auto item = dynamic_cast<Item*>( attachment ) )
-	{
-		std::cout << "'" << item->get_name() << "' has been attached to '" << _name << "'" << std::endl;
-	}
+	std::cout << "'" << attachment->get_name() << "' has been attached to '" << _name << "'" << std::endl;
 
 	return true;
 }
@@ -68,10 +63,7 @@ bool Weapon::unattach( IAttachment* attachment )
 	_attachments.erase( itr );
 
 	//  notify
-	if ( auto item = dynamic_cast<Item*>( attachment ) )
-	{
-		std::cout << "'" << item->get_name() << "' has been un-attached from '" << _name << "'" << std::endl;
-	}
+	std::cout << "'" << attachment->get_name() << "' has been un-attached from '" << _name << "'" << std::endl;
 
 	return true;
 }

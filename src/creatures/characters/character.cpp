@@ -18,7 +18,19 @@ Character::Character( const char* name, const char* description, const char* cat
 					  int money, int health, int defense, CharacterRace race, CharacterSpeciality speciality )
 	: Creature( name, description, health, defense ), _catch_phrase( catch_phrase ),
 	  _money( money ), _race( race ), _speciality( speciality )
-{}
+{
+	switch ( race )
+	{
+		case CharacterRace::HUMAN:
+			set_damages_immunity( DamageType::Immunity::HUMAN );
+			set_damages_critical( DamageType::Critical::HUMAN );
+			break;
+		case CharacterRace::CYBORG:
+			set_damages_immunity( DamageType::Immunity::CYBORG );
+			set_damages_critical( DamageType::Critical::CYBORG );
+			break;
+	}
+}
 
 void Character::introduce()
 {
@@ -56,7 +68,7 @@ void Character::loot( Creature* looted )
 	{
 		looted->drop_weapon();
 
-		if ( get_weapon()->get_damage() < weapon->get_damage() )
+		if ( get_weapon()->get_price() < weapon->get_price() )
 		{
 			equip_weapon( weapon );
 		}

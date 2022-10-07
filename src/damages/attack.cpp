@@ -28,9 +28,20 @@ bool Attack::resolve()
 	{
 		std::cout << _attacker->get_name() << " attacked " << _target->get_name() << " using '" << _attacker->get_weapon()->get_name() << "'" << std::endl;
 		
+		//  setup
+		Damage applied_damage( DamageType::NONE, 0 );
+
 		//  get base damage
-		int damage = ( ( _inflictor->get_damage() + result ) - defense );
-		
+		damages_container* damages = _inflictor->get_damages();
+		for ( auto itr = damages->begin(); itr < damages->end(); itr++ )
+		{
+			handle_damage( applied_damage, *itr, _inflictor->get_name() );
+		}
+
+		//  sub defense
+		applied_damage.points -= defense;
+		std::cout << "- " << _target->get_name() << ": " << -defense << " DEF" << std::endl;
+
 		//  get attachments damage bonuses
 		auto attachments = _inflictor->get_attachments();
 		auto itr = attachments->begin();
@@ -38,13 +49,12 @@ bool Attack::resolve()
 		{
 			IAttachment* attachment = itr->second;
 
-			Damage info = attachment->get_damage_bonus_against( _target );
-			damage += info.points;
+			handle_damage( applied_damage, attachment->get_damage_bonus_against( _target ), attachment->get_name() );
 
 			itr++;
 		}
 
-		_target->take_damage( _inflictor->get_damage_type(), damage, _attacker);
+		_target->take_damage( applied_damage, _attacker );
 		
 		//  loot target
 		if ( _attacker->can_loot() )
@@ -57,4 +67,33 @@ bool Attack::resolve()
 
 	std::cout << _attacker->get_name() << " miss " << _target->get_name() << "!" << std::endl;
 	return false;
+}
+
+void Attack::handle_damage( Damage& damage, Damage new_damage, const char* name )
+{
+	const char* damage_name = DamageType::get_name( new_damage.type );
+	
+	//  prevent immunity damage
+	if ( _target->get_damages_immunity() & new_damage.type )
+	{
+		std::cout << "- " << name << ": immunity! " << new_damage.points << " " << damage_name << " DMG (x0)" << std::endl;
+		return;
+	}
+
+	//  critical damage
+	int damages = 0;
+	if ( _target->get_damages_critical() & new_damage.type )
+	{
+		damages = new_damage.points << 1;
+		std::cout << "- " << name << ": critical! " << new_damage.points << " " << damage_name << " DMG (x2)" << std::endl;
+	}
+	//  normal damage
+	else
+	{
+		damages = new_damage.points;
+		std::cout << "- " << name << ": " << damages << " " << damage_name << " DMG " << std::endl;
+	}
+
+	damage.points += damages;
+	damage.type |= new_damage.type;
 }
