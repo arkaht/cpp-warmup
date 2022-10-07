@@ -133,7 +133,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\attachments\barrel_attachment.cpp" />
     <ClCompile Include="src\items\item.cpp" />
     <ClCompile Include="src\creatures\monster.cpp" />
     <ClCompile Include="src\damages\attack.cpp" />
